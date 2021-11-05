@@ -1,2 +1,2 @@
 # KBCTL-NG
-下一代键盘控制中心
+[Electron](http://electron.atom.io/) application boilerplate based on [Vue](https://vuejs.org/).
