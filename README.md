@@ -1,2 +1,2 @@
-# NEXT-VIA
-下一代VIA
+# KBCTL-NG
+下一代键盘控制中心
