@@ -51,7 +51,7 @@ function createMenu () {
           label: '列出支持的键盘',
           type: 'checkbox',
           click: () => {
-            alert('1')
+            console.log('1')
           }
         }
       ]
