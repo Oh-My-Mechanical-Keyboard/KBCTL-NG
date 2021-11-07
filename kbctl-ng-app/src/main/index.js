@@ -16,7 +16,7 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow() {
+function createWindow () {
   /**
    * Initial window options
    */
@@ -69,8 +69,8 @@ function createMenu () {
     }
   ]
 
-  var m = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(m);
+  var m = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(m)
 }
 
 app.on('ready', () => {
