@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
 import '../renderer/store'
 
 /**
@@ -16,7 +16,7 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -31,9 +31,54 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  return mainWindow
 }
 
-app.on('ready', createWindow)
+function createMenu () {
+  //在渲染进程中使用Menu模块需要用到remote函数
+  //创建一个模板
+  var template = [
+    {
+      label: '文件',
+      submenu: [
+        {
+          accelerator: 'ctrl+n',
+          label: '新建文件',
+          type: 'checkbox',
+          click: () => {
+            alert('2')
+          }
+        },
+        {
+          label: '新建窗口',
+          type: 'checkbox',
+          click: () => {
+            alert('1')
+          }
+        }
+      ]
+    },
+    {
+      label: '编辑',
+      submenu: [
+        {
+          label: '编辑文件'
+        },
+        {
+          label: '编辑窗口'
+        }
+      ]
+    }
+  ]
+
+  var m = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(m);
+}
+
+app.on('ready', () => {
+  mainWindow = createWindow()
+  createMenu()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
