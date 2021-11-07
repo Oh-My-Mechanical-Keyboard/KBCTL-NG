@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, dialog } from 'electron'
 import '../renderer/store'
 
 /**
@@ -35,22 +35,20 @@ function createWindow() {
 }
 
 function createMenu () {
-  //在渲染进程中使用Menu模块需要用到remote函数
-  //创建一个模板
   var template = [
     {
-      label: '文件',
+      label: '键盘配置文件',
       submenu: [
         {
           accelerator: 'ctrl+n',
-          label: '新建文件',
+          label: '导入新配置',
           type: 'checkbox',
           click: () => {
-            alert('2')
+            dialog.showOpenDialog({ properties: [ 'openFile', 'openDirectory', 'multiSelections' ]})
           }
         },
         {
-          label: '新建窗口',
+          label: '列出支持的键盘',
           type: 'checkbox',
           click: () => {
             alert('1')
@@ -59,13 +57,13 @@ function createMenu () {
       ]
     },
     {
-      label: '编辑',
+      label: '关于我们',
       submenu: [
         {
-          label: '编辑文件'
+          label: '本项目地址'
         },
         {
-          label: '编辑窗口'
+          label: 'QQ群:xxxxxxx'
         }
       ]
     }
