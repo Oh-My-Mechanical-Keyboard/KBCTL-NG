@@ -9,7 +9,13 @@
 3. Controller: 本项目中为数据逻辑层，负责解包、封装、分发来自驱动层的数据和UI的数据。
 
 ### Model
+驱动层主要负责对接各类硬件协议，不同的数据传输协议分别需要实现3个函数，分别是：
+1. `data_driver_receive(p_data, data_len)`, 用来接受数据，入参为数据指针，数据长度
+2. `data_driver_send(p_data, data_len)`，用来发送数据，入参为数据指针，数据长度
+3. `data_driver_error_handler(err_code)`，数据接受或者发送出错时的处理函数，入参为错误代码
 
 ### View
 
+
 ### Controller
+
