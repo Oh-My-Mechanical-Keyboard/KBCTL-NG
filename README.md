@@ -33,5 +33,5 @@ UI层主要展示功能页，主要有以下几个功能页：
 ## 开发准则
 1. main用来进行版本发布，每月底接受一次来自dev的合并
 2. dev用来进行功能验证，随时接受来自其他dev分支的合并
-3. {username}_dev为个人开发分支
-4. {username}_dev_{feature}为个人新特征开发分支
+3. dev_{:username}为个人开发分支
+4. dev_{:username}_{:feature}为个人新特征开发分支
