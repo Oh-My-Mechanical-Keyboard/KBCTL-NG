@@ -1,5 +1,5 @@
-function(e, t) {
-    var r = [{
+export function get_all_keycode(p_carry) {
+    var basic = [{
         label: "Basic",
         keycodes: [{
             name: "",
@@ -1538,7 +1538,9 @@ function(e, t) {
     }].reduce((function(e, t) {
         return e.concat(t.keycodes)
     }), []),
-    o = [{
+
+
+    media = [{
         name: "Mute",
         code: "KC_MUTE",
         byte: 168
@@ -1593,7 +1595,9 @@ function(e, t) {
         code: "KC_MRWD",
         byte: 188
     }],
-    n = [{
+
+
+    layer = [{
         name: "Fn1<br/>(Fn3)",
         code: "FN_MO13",
         byte: 24336
@@ -1818,7 +1822,9 @@ function(e, t) {
         code: "TT(7)",
         byte: 22535
     }],
-    i = [{
+
+
+    rgb = [{
         name: "BL<br/>Togg",
         code: "BL_TOGG",
         byte: 23743
@@ -1960,7 +1966,9 @@ function(e, t) {
         code: "RGB_M_G",
         byte: 23764
     }],
-    a = [{
+
+
+    macro = [{
         name: "MA0",
         code: "MACRO00",
         byte: 24338
@@ -2040,7 +2048,9 @@ function(e, t) {
         code: "MACRO01",
         byte: 24353
     }],
-    s = [{
+
+
+    hyper = [{
         name: "=",
         code: "KC_PEQL",
         byte: 103
@@ -2502,7 +2512,7 @@ function(e, t) {
         code: "KC_MS_ACCEL2",
         byte: 255
     }],
-    c = [{
+    ble = [{
         name: "BLE0",
         code: "KC_BLE_0",
         byte: 32768
@@ -2522,11 +2532,11 @@ function(e, t) {
         code: "KC_BLE_RESET",
         byte: 33023
     }];
-    t.keycodesList = r,
-    t.mediaKeycodes = o,
-    t.layerKeycodes = n,
-    t.lightKeycodes = i,
-    t.macroKeycodes = a,
-    t.hyperKeycodes = s,
-    t.bluetoothKeycodes = c
+    p_carry.keycodesList = basic,
+    p_carry.mediaKeycodes = media,
+    p_carry.layerKeycodes = layer,
+    p_carry.lightKeycodes = rgb,
+    p_carry.macroKeycodes = macro,
+    p_carry.hyperKeycodes = hyper,
+    p_carry.bluetoothKeycodes = ble
 }
