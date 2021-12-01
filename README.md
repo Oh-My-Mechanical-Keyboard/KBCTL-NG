@@ -35,3 +35,7 @@ UI层主要展示功能页，主要有以下几个功能页：
 2. dev用来进行功能验证，随时接受来自其他dev分支的合并
 3. dev\_{:username}为个人开发分支
 4. dev\_{:username}\_{:feature}为个人新特征开发分支
+
+## 参考
+
+1. [Electron-VUE 项目起步说明](https://simulatedgreg.gitbooks.io/electron-vue/content/cn/webpack-configurations.html)
