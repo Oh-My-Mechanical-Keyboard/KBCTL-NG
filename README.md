@@ -40,3 +40,5 @@ UI层主要展示功能页，主要有以下几个功能页：
 ## 参考
 
 1. [Electron-VUE 项目起步说明](https://simulatedgreg.gitbooks.io/electron-vue/content/cn/webpack-configurations.html)
+2. [vial上位机PyQT](https://github.com/Oh-My-Mechanical-Keyboard/KBCTL-NG/blob/main/README.md)
+3. [remap上位机react](https://github.com/remap-keys/remap/blob/main/package.json)
