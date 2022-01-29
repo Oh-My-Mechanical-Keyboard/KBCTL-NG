@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Test from '../views/keyboard_test.vue'
 
 Vue.use(Router)
 
@@ -8,13 +7,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'wellcome-page',
-      component: require('@/components/LandingPage').default
-    },
-    {
-      path: '/test',
-      component: Test,
-      name: 'test'
+      name: 'welcome-page',
+      component: require('@/components/startIndex').default
     },
     {
       path: '*',
