@@ -44,7 +44,7 @@ function createMenu () {
           label: '导入新配置',
           type: 'checkbox',
           click: () => {
-            dialog.showOpenDialog({ properties: [ 'openFile', 'openDirectory', 'multiSelections' ]})
+            dialog.showOpenDialog({ properties: [ 'openFile', 'openDirectory', 'multiSelections' ] })
           }
         },
         {
