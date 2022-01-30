@@ -11,20 +11,21 @@
 </template>
 
 <script>
-  import KeyboardTest from './KeyboardTest/KeyboardTest'
-  export default {
-    name: 'welcome',
-    components: { KeyboardTest }
-  }
+import KeyboardTest from './KeyboardTest/KeyboardTest2'
+export default {
+  name: 'welcome',
+  components: { KeyboardTest }
+}
 </script>
 
 <style>
+*, *:before, *:after {
+  box-sizing: border-box;
+}
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body { font-family: 'Source Sans Pro', sans-serif; }
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 </style>
