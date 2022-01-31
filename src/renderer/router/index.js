@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export const page_routes = [
+export const routes = [
   {
     path: '/home',
     name: 'home',
@@ -12,49 +12,39 @@ export const page_routes = [
   },
   {
     path: '/keyboard',
-    name: 'Keyboard',
+    name: 'keyboard',
     label: 'Keyboard',
     component: require('@/pages/KeyboardPage').default
   },
   {
     path: '/macro',
-    name: 'Macro',
+    name: 'macro',
     label: 'Macro',
     component: require('@/pages/MacroPage').default
   },
   {
     path: '/lighting',
-    name: 'Lighting',
+    name: 'lighting',
     label: 'Lighting',
     component: require('@/pages/LightingPage').default
   },
   {
     path: '/tool',
-    name: 'Tool',
+    name: 'tool',
     label: 'Tool',
     component: require('@/pages/ToolPage').default
   },
   {
     path: '/advance',
-    name: 'Advance',
+    name: 'advance',
     label: 'Advance',
     component: require('@/pages/AdvancePage').default
   }
 ]
 
-export const tool_routes = [
-  {
-    path: '/keyboardtset',
-    name: 'KeyboardTesk',
-    label: 'KeyboardTest',
-    component: require('@/components/KeyboardTest/index.vue').default
-  }
-]
-
 export default new Router({
   routes: [
-    ...page_routes,
-    ...tool_routes,
-    // { path: '*', redirect: '/home' }
+    ...routes,
+    { path: '*', redirect: '/home' }
   ]
 })

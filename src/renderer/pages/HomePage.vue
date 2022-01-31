@@ -1,5 +1,6 @@
 <template>
   <div class="home-page">
+    <h1>This is home page.</h1>
     <keyboard-test></keyboard-test>
   </div>
 </template>
@@ -13,4 +14,7 @@ export default {
 </script>
 
 <style scoped>
+h1 {
+  color: blue;
+}
 </style>

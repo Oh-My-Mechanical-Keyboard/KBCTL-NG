@@ -1,24 +1,21 @@
 <template>
   <div class="tool-page">
     <h1>This is tool page.</h1>
-    <router-link
-      to="/keyboardtset"
-      class="keyboard-test"
-    >
-    Keyboard Test
-    </router-link>
+    <keyboard-test></keyboard-test>
   </div>
 </template>
 
 <script>
+import KeyboardTest from '@/components/KeyboardTest/index.vue'
 
 export default {
-  name: 'tool-page'
+  name: 'tool-page',
+  components: { KeyboardTest }
 }
 </script>
 
 <style scoped>
 h1 {
-  color: orange;
+  color: green;
 }
 </style>
