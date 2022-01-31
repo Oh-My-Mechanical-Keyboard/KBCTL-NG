@@ -45,3 +45,23 @@ UI层主要展示功能页，主要有以下几个功能页：
 4. [qmk configure网站](https://github.com/qmk/qmk_configurator/tree/master/src/components)
 
 ## UI原型设计
+
+
+## 项目运行说明
+
+```bash
+# install dependencies
+yarn install
+
+# serve with hot reload at localhost:9080
+yarn run dev
+
+# build electron application for production
+yarn run build
+
+# run unit & end-to-end tests
+yarn test
+
+# lint all JS/Vue component files in `src/`
+yarn run lint
+```
