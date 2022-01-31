@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import KeyboardTest from './KeyboardTest/KeyboardTest2'
+import KeyboardTest from './KeyboardTest/KeyboardTest'
 export default {
   name: 'welcome',
   components: { KeyboardTest }
