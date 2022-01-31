@@ -1,12 +1,12 @@
 <template>
-  <div class="somewhere-page">
-    <h1>This is somewhere page.</h1>
+  <div class="lighting-page">
+    <h1>This is lighting page.</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'somewhere-page'
+  name: 'lighting'
 }
 </script>
 
