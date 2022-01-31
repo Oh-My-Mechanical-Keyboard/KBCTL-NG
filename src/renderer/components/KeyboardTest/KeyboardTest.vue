@@ -27,6 +27,11 @@
       <div class="reset">
         <button>RESET</button>
       </div>
+      <div class="layouts">
+        <button @click="switchLayout('ansi108')">ANSI 108</button>
+        <button @click="switchLayout('ansi108BigAss')">ANSI 108 Big Ass</button>
+        <button @click="switchLayout('iso108')">ISO 108</button>
+      </div>
     </div>
   </div>
 </template>
@@ -46,12 +51,20 @@ export default {
         ansi108: formatKleJson(kleAnsi108),
         ansi108BigAss: formatKleJson(kleAnsi108BigAss),
         iso108: formatKleJson(kleIso108)
-      }
+      },
+      activeLayout: 'ansi108'
     }
   },
   computed: {
     layout () {
-      return this.layouts.ansi108
+      return this.layouts[this.activeLayout]
+    }
+  },
+  methods: {
+    switchLayout (val) {
+      if (val !== this.activeLayout) {
+        this.activeLayout = val
+      }
     }
   }
 }
