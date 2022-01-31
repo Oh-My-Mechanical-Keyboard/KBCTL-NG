@@ -7,7 +7,7 @@
 <script>
 import KeyboardTest from '@/components/KeyboardTest/index.vue'
 export default {
-  name: 'home-page',
+  name: 'home',
   components: { KeyboardTest }
 }
 </script>

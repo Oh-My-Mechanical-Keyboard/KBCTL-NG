@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="reset">
-        <button>RESET</button>
+        <button @click="switchLayout('ansi108')">RESET</button>
       </div>
       <div class="layouts">
         <button @click="switchLayout('ansi108')">ANSI 108</button>
@@ -42,7 +42,7 @@ import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
 import kleIso108 from './kle-json/iso108.json'
 import { formatKleJson } from './kle-formatter'
 export default {
-  name: 'keyboard-test',
+  name: 'keyboard test',
   data () {
     return {
       electron: process.versions.electron,

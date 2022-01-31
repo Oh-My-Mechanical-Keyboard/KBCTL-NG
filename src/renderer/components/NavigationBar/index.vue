@@ -1,7 +1,7 @@
 <template>
   <div class="navigation-bar">
     <router-link
-      v-for="route in routes"
+      v-for="(route, i) in page_routes.slice(0,6)"
       :key="route.name"
       :to="route.path"
       class="navigation-link"
@@ -12,12 +12,12 @@
 </template>
 
 <script>
-import { routes } from '@/router/index'
+import { page_routes } from '@/router/index'
 export default {
   name: 'navigation-bar',
   data () {
     return {
-      routes
+      page_routes
     }
   }
 }
