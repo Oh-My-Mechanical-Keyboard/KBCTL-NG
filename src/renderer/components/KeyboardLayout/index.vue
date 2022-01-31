@@ -1,12 +1,15 @@
 <template>
-  <div class="macro-record">
-    <p> macro time line </p>
+  <div class="keyboard-layout">
+    <p> keyboard </p>
+    
   </div>
 </template>
 
 <script>
+import { formatKleJson } from '#/controller/kle-parse'
+
 export default {
-  name: 'macro'
+  name: 'keyboard'
 }
 </script>
 

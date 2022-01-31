@@ -1,81 +1,46 @@
-/* eslint-disable */
-
-export function parseKLE (kle: string): any {
-  const kleArr = kle.split(',\\')
-  return kleArr.map(row =>
-    JSON.parse(
-      row
-        .replace(/\\/g, '\\\\')
-        .replace(/\\\\/g, '\\\\\\\\')
-        .replace(/\\"\\\\(?!,)/g, '\\\\\\\\')
-        .replace(/([{,])([A-Za-z][0-9A-Za-z]?)(:)/g, '$1"$2"$3')
-    )
-  )
-}
-
-export function parseKLERaw (kle: string): ParsedKLE {
-  const parsedKLE: OuterReduceState = parseKLE(kle).reduce(
-    (prev: OuterReduceState, kle: any[]) => {
-      const parsedRow: InnerReduceState = kle.reduce(
-        (
-          { size, marginX, marginY, res, c, t, colorCount }: InnerReduceState,
-          n: KLEElem
-        ) => {
-          // Check if object and apply formatting
-          if (typeof n !== 'string') {
-            let obj = { size, marginX, marginY, colorCount, c, t, res }
-            if (n.w > 1) {
-              obj = { ...obj, size: 100 * n.w }
-            }
-            if (typeof n.y === 'number') {
-              obj = { ...obj, marginY: 100 * n.y }
-            }
-            if (typeof n.x === 'number') {
-              obj = { ...obj, marginX: 100 * n.x }
-            }
-            if (typeof n.c === 'string') {
-              obj = { ...obj, c: n.c }
-            }
-            if (typeof n.t === 'string') {
-              obj = { ...obj, t: n.t }
-            }
-            return obj
-          } else if (typeof n === 'string') {
-            const colorCountKey = `${c}:${t}`
-            const newColorCount = {
-              ...colorCount,
-              [colorCountKey]:
-                                colorCount[colorCountKey] === undefined
-                                  ? 1
-                                  : colorCount[colorCountKey] + 1
-            }
-            return {
-              marginX: 0,
-              marginY,
-              size: 100,
-              c,
-              colorCount: newColorCount,
-              t,
-              res: [...res, { c, t, label: n, size, marginX, marginY }]
+export function formatKleJson (raw) {
+    let top = 0
+    let left = 0
+    let totalW = 0
+    let totalH = 0
+    const keys = raw.reduce((result, rawRow) => {
+      const row = []
+      rawRow.forEach((current, index, array) => {
+        if (typeof current === 'string') {
+          const key = { code: current.split('\n') }
+          if (index === 0 || typeof array[index - 1] === 'string') {
+            // normal key not after a config object
+            key.x = left
+            key.y = top
+            key.w = 1
+            key.h = 1
+          } else {
+            // key after a config object
+            const { x = 0, y = 0, w = 1, h = 1 } = array[index - 1]
+            const { x2 = 0, y2 = 0, w2 = 0, h2 = 0 } = array[index - 1]
+            top += y
+            key.x = left + x
+            key.y = top
+            key.w = w
+            key.h = h
+            if (w2 && h2) {
+              key.extra = true
+              key.x2 = x2
+              key.y2 = y2
+              key.w2 = w2
+              key.h2 = h2
             }
           }
-          return { marginX, marginY, size, c, t, res, colorCount }
-        },
-        {
-          ...prev.prevFormatting,
-          colorCount: prev.colorCount,
-          marginX: 0,
-          marginY: 0,
-          size: 100,
-          res: []
+          left = key.x + key.w
+          totalW = Math.max(totalW, key.x + key.w)
+          totalH = Math.max(totalH, key.y + key.h)
+          row.push(key)
         }
-      )
-      return {
-        colorCount: parsedRow.colorCount,
-        prevFormatting: { c: parsedRow.c, t: parsedRow.t },
-        res: [...prev.res, parsedRow.res]
-      }
-    },
-    { prevFormatting: { c: '#f5f5f5', t: '#444444' }, res: [], colorCount: {} }
-  )
-}
+      })
+      top++
+      left = 0
+      return [...result, ...row]
+    }, [])
+    return { keys, w: totalW, h: totalH }
+  }
+  
