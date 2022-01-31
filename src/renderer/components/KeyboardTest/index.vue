@@ -42,10 +42,9 @@ import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
 import kleIso108 from './kle-json/iso108.json'
 import { formatKleJson } from './kle-formatter'
 export default {
-  name: 'keyboard test',
+  name: 'keyboardTest',
   data () {
     return {
-      electron: process.versions.electron,
       unit: 50,
       layouts: {
         ansi108: formatKleJson(kleAnsi108),

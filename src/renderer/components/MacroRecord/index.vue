@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'macro'
+  name: 'macroRecord'
 }
 </script>
 
