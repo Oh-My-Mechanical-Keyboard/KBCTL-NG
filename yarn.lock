@@ -11246,6 +11246,11 @@ vue-html-loader@^1.2.4:
     loader-utils "^1.0.2"
     object-assign "^4.1.0"
 
+vue-i18n@^8.27.0:
+  version "8.27.0"
+  resolved "https://registry.npmmirror.com/vue-i18n/-/vue-i18n-8.27.0.tgz#3e3b3ed2c107ccbd7f20dbdd7a96763a9990253e"
+  integrity sha512-SX35iJHL5PJ4Gfh0Mo/q0shyHiI2V6Zkh51c+k8E9O1RKv5BQyYrCxRzpvPrsIOJEnLaeiovet3dsUB0e/kDzw==
+
 vue-loader@^15.2.4:
   version "15.9.8"
   resolved "https://registry.npmmirror.com/vue-loader/download/vue-loader-15.9.8.tgz?cache=0&sync_timestamp=1636034570924&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fvue-loader%2Fdownload%2Fvue-loader-15.9.8.tgz#4b0f602afaf66a996be1e534fb9609dc4ab10e61"

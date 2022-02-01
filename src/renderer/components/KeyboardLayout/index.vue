@@ -34,9 +34,9 @@
         id="fileImport"
         type="file"
         ref="fileImportElement"
-        accept="application/json"
+        accept="json"
         @change="fileImportChanged"
-      />
+      ></input>
     </div>
   <div class="keycodes">
     <keycode-bar></keycode-bar>
@@ -72,11 +72,30 @@ export default {
         this.activeLayout = val
       }
     },
-    importKeymap() {
-      this.$refs.fileImportElement.click();
+    importKeymap () {
+      this.$refs.fileImportElement.click()
     },
-    fileImportChanged() {
-      console.log("import file")
+    fileImportChanged () {
+      console.log('import file')
+      var files = this.$refs.fileImportElement.files
+      console.log(files)
+      this.reader = new FileReader()
+      this.reader.onload = this.importJSONOnLoad
+      if (files.length >= 1) {
+        this.reader.readAsText(files[0])
+      } else {
+        // set to the default layout which can not beed edited
+        this.$refs.fileImportElement.value = ''
+      }
+    },
+    async importJSONOnLoad () {
+      try {
+        const data = JSON.parse(this.reader.result)
+        await this.loadJsonData(data)
+      } catch (error) {
+        console.log(error)
+        alert('errors.invalidQMKKeymap')
+      }
     }
   }
 }

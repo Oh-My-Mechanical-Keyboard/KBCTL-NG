@@ -51,9 +51,11 @@ yarn run build
 # run unit & end-to-end tests
 yarn test
 
-
 # lint all JS/Vue component files in `src/`
 yarn run lint
+
+#add a new module to project
+yarn add module-name
 ```
 
 ## 文件结构
