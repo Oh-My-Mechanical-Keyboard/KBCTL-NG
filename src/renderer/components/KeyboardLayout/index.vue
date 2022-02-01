@@ -24,6 +24,19 @@
           </div>
         </div>
       </div>
+      <button
+        id="import"
+        @click="importKeymap"
+      >
+      upload
+      </button>
+      <input
+        id="fileImport"
+        type="file"
+        ref="fileImportElement"
+        accept="application/json"
+        @change="fileImportChanged"
+      />
     </div>
   <div class="keycodes">
     <keycode-bar></keycode-bar>
@@ -33,6 +46,7 @@
 
 <script>
 import kleAnsi108 from './kle-jsons/default/ansi108.json'
+// import kleAnsi108 from './kle-jsons/z65ble/info-via.json'
 import { formatKleJson } from '#/controller/kle-parse'
 import KeycodeBar from '../KeycodeBar/index.vue'
 
@@ -57,6 +71,12 @@ export default {
       if (val !== this.activeLayout) {
         this.activeLayout = val
       }
+    },
+    importKeymap() {
+      this.$refs.fileImportElement.click();
+    },
+    fileImportChanged() {
+      console.log("import file")
     }
   }
 }
