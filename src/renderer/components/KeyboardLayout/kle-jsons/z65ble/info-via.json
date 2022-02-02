@@ -2,7 +2,7 @@
   "name": "R65BLE_Y&R",
   "vendorId": "0xAA96",
   "productId": "0xAA03",
-    "lighting": {
+  "lighting": {
         "extends": "none",
         "keycodes": "qmk"
     },
