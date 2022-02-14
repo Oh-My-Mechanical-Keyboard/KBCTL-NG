@@ -7,7 +7,7 @@
           <div
             v-for="(key, i) in layout.keys"
             :key="`${i}`"
-            :class="['key', { active: Math.random() > 0.85 }]"
+            :class="['key', { active: false }]"
             :style="{
               left: `${key.x * unit + 2}px`,
               top: `${key.y * unit + 2}px`,
@@ -59,12 +59,37 @@ export default {
       return this.layouts[this.activeLayout]
     }
   },
+  async mounted() {
+    this.createKeyListeners();
+    // await this.init();
+    // this.setSize(this.calculateMax(this.layout));
+  },
   methods: {
     switchLayout (val) {
       if (val !== this.activeLayout) {
         this.activeLayout = val
       }
-    }
+    },
+    createKeyListeners() {
+      document.addEventListener('keydown', this.keydown)
+      document.addEventListener('keyup', this.keyup)
+    },
+    keyup(event) {
+      console.log("keyup")
+      console.log(event)
+      var x = document.getElementsByClassName("key");
+      for (let k = 0; k < x.length; k++) {
+        x[k].classList.toggle("active")
+      }
+    },
+    keydown(event) {
+      console.log("keydown")
+      console.log(event)
+      var x = document.getElementsByClassName("key");
+      for (let k = 0; k < x.length; k++) {
+        x[k].classList.toggle("active")
+      }
+    },
   }
 }
 </script>

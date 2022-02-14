@@ -97,35 +97,35 @@ export default {
         alert('errors.invalidQMKKeymap')
       }
     },
-    async loadJsonData(data) {
+    async loadJsonData (data) {
       if (data.version && data.keyboard && data.keyboard.settings) {
-        alert('errors.kbfirmwareJSONUnsupported');
-        return;
+        alert('errors.kbfirmwareJSONUnsupported')
+        return
       }
 
       if (checkInvalidKeymap(data)) {
-        alert('errors.unknownJSON');
-        return;
+        alert('errors.unknownJSON')
+        return
       }
 
       /* TODO Add check for keyboard name and layout */
 
       if (!isUndefined(data.author)) {
-        const { author, notes } = data;
-        this.setAuthor(author);
-        this.setNotes(notes);
+        const { author, notes } = data
+        this.setAuthor(author)
+        this.setNotes(notes)
       }
 
       // remap old json files to new mappings if they need it
       data = Object.assign(
         data,
         this.remapKeyboard(data.keyboard, data.layout)
-      );
+      )
 
-      this.setKeyboard(data.keyboard);
+      this.setKeyboard(data.keyboard)
       try {
-        await this.changeKeyboard(this.keyboard);
-        this.setLayout(data.layout);
+        await this.changeKeyboard(this.keyboard)
+        this.setLayout(data.layout)
         // todo validate these values
         await this.$router
           .replace({
@@ -134,32 +134,32 @@ export default {
           .catch((err) => {
             if (err.name !== 'NavigationDuplicated') {
               // ignore nav errors
-              console.error(err);
+              console.error(err)
             }
-          });
+          })
 
-        var store = this.$store;
+        var store = this.$store
         let promise = await new Promise((resolve) =>
           this.setLoadingKeymapPromise(resolve)
-        );
-        const stats = await this.load_converted_keymap(data.layers);
-        let msg = this.$t('statsTemplate', stats);
+        )
+        const stats = await this.load_converted_keymap(data.layers)
+        let msg = this.$t('statsTemplate', stats)
         if (stats.warnings.length > 0 || stats.errors.length > 0) {
-          msg = `${msg}\n${stats.warnings.join('\n')}`;
-          msg = `${msg}\n${stats.errors.join('\n')}`;
+          msg = `${msg}\n${stats.warnings.join('\n')}`
+          msg = `${msg}\n${stats.errors.join('\n')}`
         }
-        this.deferredMessage(msg);
+        this.deferredMessage(msg)
         this.viewReadme(this.keyboard).then(() => {
-          let keymapName = data.keymap;
+          let keymapName = data.keymap
           if (keymapName.endsWith('.json')) {
-            keymapName = keymapName.replace(/.json$/, '');
+            keymapName = keymapName.replace(/.json$/, '')
           }
-          this.setKeymapName(keymapName);
-          this.setDirty();
-        });
-        disableOtherButtons();
+          this.setKeymapName(keymapName)
+          this.setDirty()
+        })
+        disableOtherButtons()
       } catch (err) {
-        console.log('Unexpected error', err);
+        console.log('Unexpected error', err)
       }
     }
   }

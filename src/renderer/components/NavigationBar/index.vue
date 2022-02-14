@@ -6,7 +6,7 @@
       :to="route.path"
       class="navigation-link"
     >
-      {{ route.label }}
+      {{ $t(route.label) }}
     </router-link>
   </div>
 </template>
