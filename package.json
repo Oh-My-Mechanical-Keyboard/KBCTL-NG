@@ -70,7 +70,7 @@
   "publish": [
     {
       "provider": "YR Studio",
-      "url": "http://127.0.0.1:8090/demo/" 
+      "url": "http://127.0.0.1:8090/demo/"
     }
   ],
   "devDependencies": {
@@ -120,7 +120,6 @@
     "mini-css-extract-plugin": "0.4.0",
     "mocha": "^5.2.0",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.9.2",
     "require-dir": "^1.0.0",
     "sass-loader": "^7.0.3",
     "spectron": "^3.8.0",
