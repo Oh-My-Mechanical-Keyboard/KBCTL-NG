@@ -3,9 +3,34 @@
     <h2 class="title">Keyboard Test</h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <template v-for="key in keys">
-          <tester-key></tester-key>
-        </template>
+        <div class="keyboard-keys" :style="{ width: `${layout.w * unit}px`, height: `${layout.h * unit}px` }">
+          <div
+            v-for="(key, i) in layout.keys"
+            :key="`${i}`"
+            :class="['key', { active: false }]"
+            :style="{
+              left: `${key.x * unit + 2}px`,
+              top: `${key.y * unit + 2}px`,
+              width: `${key.w * unit - 4}px`,
+              height: `${key.h * unit - 4}px`,
+              '--x2': key.extra && `${key.x2 * unit}px`,
+              '--y2': key.extra && `${key.y2 * unit}px`,
+              '--w2': key.extra && `${key.w2 * unit - 4}px`,
+              '--h2': key.extra && `${key.h2 * unit - 4}px`,
+            }"
+            :data-extra="key.extra"
+          >
+            <span v-for="label in key.code" class="label">{{ label }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="reset">
+        <button @click="switchLayout('ansi108')">RESET</button>
+      </div>
+      <div class="layouts">
+        <button @click="switchLayout('ansi108')">ANSI 108</button>
+        <button @click="switchLayout('ansi108BigAss')">ANSI 108 Big Ass</button>
+        <button @click="switchLayout('iso108')">ISO 108</button>
       </div>
     </div>
   </div>
@@ -19,21 +44,33 @@ import { formatKleJson } from './kle-formatter'
 import TesterKey from './TesterKey.vue'
 export default {
   name: 'keyboardTest',
-  components: { TesterKey },
   data () {
     return {
-      keys: [1,2,3]
+      unit: 50,
+      layouts: {
+        ansi108: formatKleJson(kleAnsi108),
+        ansi108BigAss: formatKleJson(kleAnsi108BigAss),
+        iso108: formatKleJson(kleIso108)
+      },
+      activeLayout: 'ansi108'
     }
   },
   computed: {
     layout () {
-      return [1]
+      return this.layouts[this.activeLayout]
     }
   },
   async mounted() {
-    this.createKeyListeners()
+    this.createKeyListeners();
+    // await this.init();
+    // this.setSize(this.calculateMax(this.layout));
   },
   methods: {
+    switchLayout (val) {
+      if (val !== this.activeLayout) {
+        this.activeLayout = val
+      }
+    },
     createKeyListeners() {
       document.addEventListener('keydown', this.keydown)
       document.addEventListener('keyup', this.keyup)
@@ -41,11 +78,18 @@ export default {
     keyup(event) {
       console.log("keyup")
       console.log(event)
-      var x = document.getElementsByClassName("key")
+      var x = document.getElementsByClassName("key");
+      for (let k = 0; k < x.length; k++) {
+        x[k].classList.toggle("active")
+      }
     },
     keydown(event) {
       console.log("keydown")
       console.log(event)
+      var x = document.getElementsByClassName("key");
+      for (let k = 0; k < x.length; k++) {
+        x[k].classList.toggle("active")
+      }
     }
   }
 }
