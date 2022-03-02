@@ -3,9 +3,28 @@
     <h2 class="title">Keyboard Test</h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <template v-for="key in keys">
-          <tester-key></tester-key>
-        </template>
+        <div class="keyboard-keys" :style="{ width: `${layout.w * unit}px`, height: `${layout.h * unit}px` }">
+          <div
+            v-for="(key, i) in layout.keys"
+            :key="`${i}`"
+          >
+            <tester-key
+              :unit = unit,
+              :x = key.x,
+              :y = key.y,
+              :w = key.w,
+              :h = key.h,
+              :x2 = key.x2,
+              :y2 = key.y2,
+              :w2 = key.w2,
+              :h2 = key.h2,
+              :extra = key.extra,
+              :code = key.code,
+              :label = key.label
+            >
+            </tester-key>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -22,18 +41,29 @@ export default {
   components: { TesterKey },
   data () {
     return {
-      keys: [1,2,3]
+      unit: 50,
+      layouts: {
+        ansi108: formatKleJson(kleAnsi108),
+        ansi108BigAss: formatKleJson(kleAnsi108BigAss),
+        iso108: formatKleJson(kleIso108)
+      },
+      activeLayout: 'ansi108'
     }
   },
   computed: {
     layout () {
-      return [1]
+      return this.layouts[this.activeLayout]
     }
   },
   async mounted() {
     this.createKeyListeners()
   },
   methods: {
+    switchLayout (val) {
+      if (val !== this.activeLayout) {
+        this.activeLayout = val
+      }
+    },
     createKeyListeners() {
       document.addEventListener('keydown', this.keydown)
       document.addEventListener('keyup', this.keyup)
