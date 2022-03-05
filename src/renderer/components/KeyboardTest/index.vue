@@ -3,27 +3,24 @@
     <h2 class="title">Keyboard Test</h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <div class="keyboard-keys" :style="{ width: `${layout.w * unit}px`, height: `${layout.h * unit}px` }">
-          <div
+        <div class="keyboard-keys" :style="{ width: `${layout.ex * unit}px`, height: `${layout.ey * unit}px` }">
+          <base-key
             v-for="(key, i) in layout.keys"
             :key="`${i}`"
+            :unit = "unit"
+            :x = "key.x"
+            :y = "key.y"
+            :w = "key.w"
+            :h = "key.h"
+            :x2 = "key.x2"
+            :y2 = "key.y2"
+            :w2 = "key.w2"
+            :h2 = "key.h2"
+            :extra = "key.extra"
+            :code = "key.code"
+            :label = "key.label"
           >
-            <tester-key
-              :unit = unit,
-              :x = key.x,
-              :y = key.y,
-              :w = key.w,
-              :h = key.h,
-              :x2 = key.x2,
-              :y2 = key.y2,
-              :w2 = key.w2,
-              :h2 = key.h2,
-              :extra = key.extra,
-              :code = key.code,
-              :label = key.label
-            >
-            </tester-key>
-          </div>
+          </base-key>
         </div>
       </div>
     </div>
@@ -36,9 +33,10 @@ import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
 import kleIso108 from './kle-json/iso108.json'
 import { formatKleJson } from './kle-formatter'
 import TesterKey from './TesterKey.vue'
+import BaseKey from './BaseKey.vue'
 export default {
   name: 'keyboardTest',
-  components: { TesterKey },
+  components: { BaseKey },
   data () {
     return {
       unit: 50,
@@ -71,7 +69,6 @@ export default {
     keyup(event) {
       console.log("keyup")
       console.log(event)
-      var x = document.getElementsByClassName("key")
     },
     keydown(event) {
       console.log("keydown")
