@@ -3,6 +3,14 @@ export function formatKleJson (raw) {
   let left = 0
   let totalW = 0
   let totalH = 0
+  let pre_r = 0
+  let pre_rx = 0
+  let pre_ry = 0
+  let pre_x2 = 0
+  let pre_y2 = 0
+  let pre_w2 = 0
+  let pre_h2 = 0
+  let type = 0
   const keys = raw.reduce((result, rawRow) => {
     const row = []
     rawRow.forEach((current, index, array) => {
@@ -14,6 +22,14 @@ export function formatKleJson (raw) {
           key.y = top
           key.w = 1
           key.h = 1
+          key.r = pre_r
+          key.rx = pre_rx
+          key.ry = pre_ry
+          key.x2 = pre_x2
+          key.y2 = pre_y2
+          key.w2 = pre_w2
+          key.h2 = pre_h2
+          key.type = "alpha"
         } else {
           // key after a config object
           const { x = 0, y = 0, w = 1, h = 1 } = array[index - 1]
