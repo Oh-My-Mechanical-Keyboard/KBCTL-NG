@@ -59,6 +59,7 @@
     "electron-updater": "^4.6.5",
     "element-ui": "^2.15.6",
     "howler": "^2.2.3",
+    "sass": "^1.49.9",
     "vue": "^2.5.16",
     "vue-devtools": "^5.1.4",
     "vue-electron": "^1.0.6",

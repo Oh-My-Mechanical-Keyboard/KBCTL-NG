@@ -18,7 +18,7 @@
             :h2 = "key.h2"
             :extra = "key.extra"
             :code = "key.code"
-            :label = "key.label"
+            :labels = "key.labels"
           >
           </base-key>
         </div>
@@ -102,42 +102,5 @@ export default {
   font-size: 12px;
   overflow: hidden;
   position: relative;
-}
-.key {
-  position: absolute;
-  z-index: 10;
-  border-radius: 7px;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  /* overflow: hidden; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.key[data-extra]:after {
-  content: '';
-  position: absolute;
-  top: var(--y2);
-  left: var(--x2);
-  width: var(--w2);
-  height: var(--h2);
-  z-index: -5;
-  display: block;
-  border-radius: 7px;
-  background-color: #333;
-  box-sizing: border-box;
-}
-.key.active, .key.active[data-extra]:after {
-  background-color: #aaa;
-  color: #333;
-}
-.label {
-  /* height: 16px; */
-  line-height: 16px;
-  display: block;
-  min-width: 1px;
-  min-height: 16px;
 }
 </style>

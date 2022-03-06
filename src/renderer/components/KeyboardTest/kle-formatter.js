@@ -14,10 +14,7 @@ export function formatKleJson (raw) {
   let preR = 0
   let preRX = 0
   let preRy = 0
-  let preX2 = 0
-  let preY2 = 0
-  let preW2 = 0
-  let preH2 = 0
+
   /**通过颜色判断是什么类型的键
    * 可选值为3类
    * 字母 alpha：#cccccc
@@ -30,7 +27,7 @@ export function formatKleJson (raw) {
     rawRow.forEach((current, index, array) => {
       if (typeof current === 'string') {
         // 只有在string的时候才进行处理
-        const key = { label: current.split('\n'), code: 0x04 }
+        const key = { labels: current.split('\n'), code: 0x04 }
         // 行首的键为带有配置项的键的时候走后面的逻辑
         // 当这个键是一个普通键的时候利用上一行的值进行配置
         if (index === 0 || typeof array[index - 1] === 'string') {
@@ -42,10 +39,11 @@ export function formatKleJson (raw) {
           key.r = preR
           key.rx = preRX
           key.ry = preRy
-          key.x2 = preX2
-          key.y2 = preY2
-          key.w2 = preW2
-          key.h2 = preH2
+          key.extra = false
+          key.x2 = 0
+          key.y2 = 0
+          key.w2 = 0
+          key.h2 = 0
           key.type = preType
         } else {
           // key after a config object
@@ -59,13 +57,16 @@ export function formatKleJson (raw) {
           key.y = top + y
           key.w = w
           key.h = h
-          if (w2 && h2) {
+          if (w2 === 0 && h2 === 0) {
+            key.extra = false //特殊键标记（大回车等）
+          } else {
             key.extra = true //特殊键标记（大回车等）
-            key.x2 = x2
-            key.y2 = y2
-            key.w2 = w2
-            key.h2 = h2
           }
+
+          key.x2 = x2
+          key.y2 = y2
+          key.w2 = w2
+          key.h2 = h2
           
           // 进行按键类型判断
           if (c === "#aaaaaa" || c === "mod") {
