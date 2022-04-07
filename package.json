@@ -59,13 +59,15 @@
     "electron-updater": "^4.6.5",
     "element-ui": "^2.15.6",
     "howler": "^2.2.3",
+    "keycode": "^2.2.1",
+    "lodash": "^4.17.21",
     "sass": "^1.49.9",
     "vue": "^2.5.16",
     "vue-devtools": "^5.1.4",
     "vue-electron": "^1.0.6",
     "vue-i18n": "^8.27.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
+    "vuex": "3",
     "vuex-electron": "^1.0.0"
   },
   "publish": [

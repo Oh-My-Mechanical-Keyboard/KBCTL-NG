@@ -6,6 +6,7 @@
         <div class="keyboard-keys" :style="{ width: `${layout.ex * unit}px`, height: `${layout.ey * unit}px` }">
           <base-key
             v-for="(key, i) in layout.keys"
+            ref = "key.code"
             :key="`${i}`"
             :unit = "unit"
             :x = "key.x"
@@ -34,6 +35,10 @@ import kleIso108 from './kle-json/iso108.json'
 import { formatKleJson } from './kle-formatter'
 import TesterKey from './TesterKey.vue'
 import BaseKey from './BaseKey.vue'
+import keycode from 'keycode'
+import isUndefined from 'lodash/isUndefined'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
+
 export default {
   name: 'keyboardTest',
   components: { BaseKey },
@@ -45,7 +50,9 @@ export default {
         ansi108BigAss: formatKleJson(kleAnsi108BigAss),
         iso108: formatKleJson(kleIso108)
       },
-      activeLayout: 'ansi108'
+      activeLayout: 'ansi108',
+      timingKeyUp: {},
+      timingKeyDown: {}
     }
   },
   computed: {
@@ -55,6 +62,9 @@ export default {
   },
   async mounted() {
     this.createKeyListeners()
+  },
+  beforeDestroy() {
+    this.destroyKeyListeners();
   },
   methods: {
     switchLayout (val) {
@@ -66,13 +76,56 @@ export default {
       document.addEventListener('keydown', this.keydown)
       document.addEventListener('keyup', this.keyup)
     },
+    destroyKeyListeners() {
+      document.removeEventListener('keydown', this.keydown);
+      document.removeEventListener('keyup', this.keyup);
+    },
     keyup(event) {
-      console.log("keyup")
+      console.log("keyup ", event.key, " ", event.keyCode)
       console.log(event)
+      // 记录抬起的时间
+      const endTS = performance.now();
+      this.timingKeyUp[event.code] = endTS;
+      const elapsedTime = this.getElapsedTime(event, endTS);
+      const evStr = this.formatKeyEvent(event, elapsedTime);
+      console.log(evStr)
+      event.preventDefault();
+      event.stopPropagation();
+      // this.setDetected({
+      //     event.keyCode
+      // });
     },
     keydown(event) {
-      console.log("keydown")
-      console.log(event)
+      // console.log("keydown")
+      // console.log(keycode.isEventKey(event, 'down'))
+      // 记录按下的时间
+      this.timingKeyDown[event.code] = performance.now();
+      event.preventDefault();
+      event.stopPropagation();
+      
+    },
+    getElapsedTime(ev, endTs) {
+      return (endTs - this.timingKeyDown[ev.code]).toFixed(3);
+    },
+    formatKeyEvent(ev, time) {
+      const msg = [];
+      if (time) {
+        msg.push(`in ${time}ms`);
+      }
+      msg.unshift(
+        [
+          'Event key:',
+          this.greenMarkup(ev.key, 11),
+          'Code:',
+          this.greenMarkup(ev.code, 13),
+          'KeyCode:',
+          ev.keyCode
+        ].join(' ')
+      );
+      return msg.join(' ');
+    },
+    greenMarkup(text, padlen) {
+      return `<span class="log-green">${text.padEnd(padlen, ' ')}</span>`;
     }
   }
 }
@@ -102,5 +155,8 @@ export default {
   font-size: 12px;
   overflow: hidden;
   position: relative;
+}
+span.log-green {
+  color: lightgreen;
 }
 </style>

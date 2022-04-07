@@ -3,7 +3,7 @@
  * in a one-shot manner. There should not be any reason to edit this file.
  */
 
-const files = require.context('.', false, /\.js$/)
+const files = require.context('.', true, /\.js$/)
 const modules = {}
 
 files.keys().forEach(key => {

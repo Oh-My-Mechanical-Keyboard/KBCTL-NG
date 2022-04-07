@@ -1,5 +1,13 @@
-function getKeyCodeInfo(code) {
-  return code.split('\n')
+import KeyStr2Keycode from './keycodeMap.js'
+
+function getKeyCodeInfo(pat_str) {
+  var labels_ = pat_str.split("\n")
+  var labels_str = labels_.join("").toLowerCase()
+  if (labels_str === "") {
+    labels_str = "space"
+  }
+  var code_ = KeyStr2Keycode[labels_str]
+  return {labels:labels_, code:code_}
 }
 
 export function formatKleJson (raw) {
@@ -27,7 +35,8 @@ export function formatKleJson (raw) {
     rawRow.forEach((current, index, array) => {
       if (typeof current === 'string') {
         // 只有在string的时候才进行处理
-        const key = { labels: current.split('\n'), code: 0x04 }
+        // const key = { labels: current.split('\n'), code: 0x04 }
+        const key = getKeyCodeInfo(current)
         // 行首的键为带有配置项的键的时候走后面的逻辑
         // 当这个键是一个普通键的时候利用上一行的值进行配置
         if (index === 0 || typeof array[index - 1] === 'string') {
