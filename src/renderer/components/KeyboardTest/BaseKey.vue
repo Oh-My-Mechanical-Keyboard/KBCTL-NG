@@ -13,7 +13,7 @@
     }"
     :data-extra="extra"
   >
-    <span v-for="label in labels" class="label">{{ label }}</span>
+    <span v-for="(label, i) in labels" class="label" :key="`${i}`">{{ label }}</span>
   </div>
 </template>
 

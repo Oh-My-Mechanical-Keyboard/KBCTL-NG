@@ -33,11 +33,7 @@ import kleAnsi108 from './kle-json/ansi108.json'
 import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
 import kleIso108 from './kle-json/iso108.json'
 import { formatKleJson } from './kle-formatter'
-import TesterKey from './TesterKey.vue'
 import BaseKey from './BaseKey.vue'
-import keycode from 'keycode'
-import isUndefined from 'lodash/isUndefined'
-import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default {
   name: 'keyboardTest',
