@@ -30,9 +30,8 @@
 
 <script>
 import kleAnsi108 from './kle-json/ansi108.json'
-import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
 import kleIso108 from './kle-json/iso108.json'
-import { formatKleJson } from './kle-formatter'
+import kleTools from './kle-formatter.js'
 import BaseKey from './BaseKey.vue'
 
 export default {
@@ -42,9 +41,8 @@ export default {
     return {
       unit: 50,
       layouts: {
-        ansi108: formatKleJson(kleAnsi108),
-        ansi108BigAss: formatKleJson(kleAnsi108BigAss),
-        iso108: formatKleJson(kleIso108)
+        ansi108: kleTools.formatKleJson(kleAnsi108),
+        iso108: kleTools.formatKleJson(kleIso108)
       },
       activeLayout: 'ansi108',
       timingKeyUp: {},
@@ -92,7 +90,7 @@ export default {
       // });
     },
     keydown(event) {
-      // console.log("keydown")
+      console.log(event)
       // console.log(keycode.isEventKey(event, 'down'))
       // 记录按下的时间
       this.timingKeyDown[event.code] = performance.now();

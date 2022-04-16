@@ -6,14 +6,15 @@ function getKeyCodeInfo(pat_str) {
   if (labels_str === "") {
     labels_str = "space"
   }
-  console.log(keycodeMap.KeyStr2Keycode[labels_str][0])
-  var code_ = keycodeMap.KeyStr2Keycode[labels_str][0]
-  // var qmk_code = KeyStr2Keycode[labels_str][1]
+  var code_ = keycodeMap.keyStr2code[labels_str][0]
+  // var key_code_ = keyStr2code[labels_str][1]
+  // var qmk_code_ = keyStr2code[labels_str][2]
   var qmk_code_ = 'KC_A'
-  return {labels:labels_, code:code_, qmk_code: qmk_code_}
+  var key_code_ = 'A'
+  return {labels:labels_, code:code_, qmk_code: qmk_code_, key_code: key_code_}
 }
 
-export function formatKleJson (raw) {
+function formatKleJson (raw) {
   let startX = Number.MAX_VALUE
   let startY = Number.MAX_VALUE
   let endX = 0
@@ -110,3 +111,5 @@ export function formatKleJson (raw) {
   }, [])
   return { keys, ex: endX, ey: endY , sx: startX, sy: startY}
 }
+
+export default {formatKleJson}

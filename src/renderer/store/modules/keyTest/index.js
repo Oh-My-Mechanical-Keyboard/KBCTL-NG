@@ -1,6 +1,21 @@
 import keys from 'lodash/keys';
+import isUndefined from 'lodash/isUndefined'
 import Vue from 'vue';
+import layouts from './layouts';
 
+
+function reduce2codeIndex(arr) {
+  // Create look up table for Browser Code to Layout position
+  return arr.reduce((acc, code, idx) => {
+    acc[code] = idx;
+    return acc;
+  }, {});
+}
+
+const codeToPosition = {
+  ANSI: reduce2codeIndex(layouts.ANSI),
+  ISO: reduce2codeIndex(layouts.ISO)
+};
 
 function getDefaultLayout() {
   const userLang = navigator.language || navigator.userLanguage;
@@ -13,10 +28,11 @@ function getDefaultLayout() {
 
 const state = {
   layout: getDefaultLayout(),
+  keymap: {},
   layouts: {
     ISO: layouts.ISO,
     ANSI: layouts.ANSI
-  },
+  }
 };
 
 const getters = {
@@ -24,11 +40,11 @@ const getters = {
     return keys(state.layouts).sort();
   },
   getQMKCode(state) {
-    return (pos) => {
-      if (isUndefined(pos)) {
+    return (code) => {
+      if (isUndefined(code)) {
         return '';
       }
-      return state.keymap[state.layout][pos].code;
+      return state.keymap[state.layout][code].qmk_code;
     };
   },
   activeKeymap(state) {
@@ -78,15 +94,9 @@ const mutations = {
     Vue.set(state.keymap[state.layout][pos], 'active', false);
     Vue.set(state.keymap[state.layout][pos], 'detected', true);
   },
-  setChatterDetected(state, { pos }) {
-    state.chatterDetected = true;
-    Vue.set(state.keymap[state.layout][pos], 'chatter', true);
-  },
   reset(state) {
-    state.chatterDetected = false;
     state.keymap[state.layout].forEach((v, idx) => {
       Vue.set(state.keymap[state.layout][idx], 'detected', false);
-      Vue.set(state.keymap[state.layout][idx], 'chatter', false);
     });
   }
 };
