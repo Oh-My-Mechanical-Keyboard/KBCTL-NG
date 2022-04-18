@@ -3,20 +3,6 @@ import isUndefined from 'lodash/isUndefined'
 import Vue from 'vue';
 import layouts from './layouts';
 
-
-function reduce2codeIndex(arr) {
-  // Create look up table for Browser Code to Layout position
-  return arr.reduce((acc, code, idx) => {
-    acc[code] = idx;
-    return acc;
-  }, {});
-}
-
-const codeToPosition = {
-  ANSI: reduce2codeIndex(layouts.ANSI),
-  ISO: reduce2codeIndex(layouts.ISO)
-};
-
 function getDefaultLayout() {
   const userLang = navigator.language || navigator.userLanguage;
   let layout = 'ANSI';
@@ -60,20 +46,20 @@ const getters = {
 
 function mapKeymap(store, arr) {
   // Create look up table for QMK Code to Layout position
-  return arr.map((code) => {
-    const meta = store.getters['keycodes/lookupKeycode'](code);
-    return {
-      ...meta
-    };
-  });
+  return kk.reduce((pre, cur) => {
+    pre[cur['key_code']] = {'code' : cur['code'],
+                            'qmk_code' : cur['qmk_code'],
+                            'active' : false}
+    return pre
+  }, {})
 }
 
 const actions = {
   init({ state, commit }) {
     const store = this;
     commit('setKeymap', {
-      ANSI: mapKeymap(store, qmkToPos.ANSI),
-      ISO: mapKeymap(store, qmkToPos.ISO)
+      ANSI: mapKeymap(store, layouts.ANSI.keys),
+      ISO: mapKeymap(store, layouts.ISO.keys)
     });
     return state.keymap;
   }
@@ -86,17 +72,15 @@ const mutations = {
   setKeymap(state, keymap) {
     state.keymap = keymap;
   },
-  setActive(state, { pos }) {
-    Vue.set(state.keymap[state.layout][pos], 'active', true);
-    Vue.set(state.keymap[state.layout][pos], 'detected', false);
+  setActive(state, { keyCode }) {
+    Vue.set(state.keymap[state.layout][keyCode], 'active', true);
   },
-  setDetected(state, { pos }) {
-    Vue.set(state.keymap[state.layout][pos], 'active', false);
-    Vue.set(state.keymap[state.layout][pos], 'detected', true);
+  setDetected(state, { keyCode }) {
+    Vue.set(state.keymap[state.layout][keyCode], 'active', false);
   },
   reset(state) {
     state.keymap[state.layout].forEach((v, idx) => {
-      Vue.set(state.keymap[state.layout][idx], 'detected', false);
+      Vue.set(state.keymap[state.layout][idx], 'active', false);
     });
   }
 };
