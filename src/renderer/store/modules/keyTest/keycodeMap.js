@@ -86,7 +86,7 @@ var keyStr2code = {
   'penter' : [108, 'NumpadDecimal', 'KC_PENT'],
   '-' : [109, 'NumpadSubtract', 'KC_PMINS'],
   '.del' : [110, 'NumpadDecimal', 'KC_PDOT'],
-  '/' : [111, '	NumpadDivide', 'KC_PSLS'],
+  '/' : [111, 'NumpadDivide', 'KC_PSLS'],
 
   'f1' : [112, 'F1', 'KC_F1'],
   'f2' : [113, 'F2', 'KC_F2'],
@@ -125,3 +125,4 @@ var keyStr2code = {
 }
 
 export default { keyStr2code }
+  
