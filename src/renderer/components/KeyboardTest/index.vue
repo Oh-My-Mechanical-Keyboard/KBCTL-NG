@@ -95,8 +95,6 @@ export default {
       document.removeEventListener('keyup', this.keyup);
     },
     keyup(event) {
-      console.log("keyup ", event.key, " ", event.keyCode)
-      console.log(event)
       // 记录抬起的时间
       const endTS = performance.now();
       this.timingKeyUp[event.code] = endTS;
@@ -108,8 +106,6 @@ export default {
       this.setDetected(event.code);
     },
     keydown(event) {
-      console.log(this.testerLayer)
-      // console.log(keycode.isEventKey(event, 'down'))
       // 记录按下的时间
       this.timingKeyDown[event.code] = performance.now();
       event.preventDefault();

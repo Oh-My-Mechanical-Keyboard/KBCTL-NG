@@ -67,8 +67,9 @@ var keyStr2code = {
   'y' : [89, 'KeyY', 'KC_Y'],
   'z' : [90, 'KeyZ', 'KC_Z'],
 
-  'win' : [91, 'OSLeft', 'KC_LGUI'],
-  'rightwin' : [91, 'OSRight', 'KC_RGUI'],
+  'gui' : [91, 'OS', 'KC_GUI'],
+  'leftgui' : [91, 'MetaLeft', 'KC_LGUI'],
+  'rightgui' : [92, 'MetaRight', 'KC_RGUI'],
   'menu' : [93, 'ContextMenu', 'KC_APP'],
 
   '0ins' : [96, 'Numpad0', 'KC_P0'],

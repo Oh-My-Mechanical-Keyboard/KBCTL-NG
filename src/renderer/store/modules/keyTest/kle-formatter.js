@@ -1,14 +1,44 @@
 import keycodeMap from './keycodeMap.js'
-
+var leftFlag = {
+  'alt': false,
+  'gui': false,
+  'ctrl': false
+}
 function getKeyCodeInfo(pat_str) {
   var labels_ = pat_str.split(/[\s\n]/)
   var labels_str = labels_.join("").toLowerCase()
   if (labels_str === "") {
     labels_str = "space"
   }
-  var key_code_ = keycodeMap.keyStr2code[labels_str][0]
-  var code_ = keycodeMap.keyStr2code[labels_str][1]
-  var qmk_code_ = keycodeMap.keyStr2code[labels_str][2]
+  var key_code_ = 0
+  var code_ = 'None'
+  var qmk_code_ = 'KC_NONE'
+
+  if (labels_str.indexOf('alt') >= 0) {
+    if (leftFlag['alt']) {
+      labels_str = 'rightalt'
+    } else {
+      leftFlag['alt'] = true
+      labels_str = 'leftalt'
+    }
+  } else if (labels_str.indexOf('ctrl') >= 0) {
+    if (leftFlag['ctrl']) {
+      labels_str = 'rightctrl'
+    } else {
+      leftFlag['ctrl'] = true
+      labels_str = 'leftctrl'
+    }
+  } else if (labels_str.indexOf('gui') >= 0) {
+    if (leftFlag['gui']) {
+      labels_str = 'rightgui'
+    } else {
+      leftFlag['gui'] = true
+      labels_str = 'leftgui'
+    }
+  }
+  key_code_ = keycodeMap.keyStr2code[labels_str][0]
+  code_ = keycodeMap.keyStr2code[labels_str][1]
+  qmk_code_ = keycodeMap.keyStr2code[labels_str][2]
   return {labels:labels_, code:code_, qmk_code: qmk_code_, key_code: key_code_}
 }
 
