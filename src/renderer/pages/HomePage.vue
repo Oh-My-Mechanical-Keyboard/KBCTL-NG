@@ -1,15 +1,15 @@
 <template>
   <div class="home-page">
     <h1>This is home page.</h1>
-    <keyboard-test></keyboard-test>
+    <keyboard-layout></keyboard-layout>
   </div>
 </template>
 
 <script>
-import KeyboardTest from '@/components/KeyboardTest/index.vue'
+import KeyboardLayout from '@/components/KeyboardLayout/index.vue'
 export default {
   name: 'home',
-  components: { KeyboardTest }
+  components: { KeyboardLayout }
 }
 </script>
 

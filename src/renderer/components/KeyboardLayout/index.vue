@@ -1,18 +1,19 @@
 <template>
   <div class="keyboard-layout">
-    <h2 class="keyboard-name"> keyboard </h2>
+    <h2 class="keyboard-name"> {{kbName}} </h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <div class="keyboard-keys" :style="{ width: `${layout.w * unit}px`, height: `${layout.h * unit}px` }">
+        <div class="keyboard-keys" :style="{ width: `${layout.ex * unit}px`, height: `${layout.ey * unit}px` }">
           <div
             v-for="(key, i) in layout.keys"
             :key="`${i}`"
-            :class="['key', { active: Math.random() > 0.85 }]"
+            :class="['key', key.type]"
             :style="{
               left: `${key.x * unit + 2}px`,
               top: `${key.y * unit + 2}px`,
               width: `${key.w * unit - 4}px`,
               height: `${key.h * unit - 4}px`,
+              '--w' : `${key.w * unit - 4}px`,
               '--x2': key.extra && `${key.x2 * unit}px`,
               '--y2': key.extra && `${key.y2 * unit}px`,
               '--w2': key.extra && `${key.w2 * unit - 4}px`,
@@ -20,10 +21,11 @@
             }"
             :data-extra="key.extra"
           >
-            <span v-for="label in key.code" class="label">{{ label }}</span>
+            <span v-for="label in key.labels" class="label">{{ label }}</span>
           </div>
         </div>
       </div>
+      <br>
       <button
         id="import"
         @click="importKeymap"
@@ -46,7 +48,7 @@
 
 <script>
 import kleAnsi108 from './kle-jsons/default/ansi108.json'
-// import kleAnsi108 from './kle-jsons/z65ble/info-via.json'
+import kleZ65ble from './kle-jsons/z65ble/info-via.json'
 import { formatKleJson } from '#/controller/kle-parse'
 import KeycodeBar from '../KeycodeBar/index.vue'
 
@@ -58,12 +60,13 @@ export default {
   data () {
     return {
       unit: 50,
-      activeLayout: 'ansi108'
+      activeLayout: 'ansi108',
+      kbName: 'Z65'
     }
   },
   computed: {
     layout () {
-      return formatKleJson(kleAnsi108)
+      return formatKleJson(kleZ65ble)
     }
   },
   methods: {
@@ -202,6 +205,12 @@ export default {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+.key.encoder_r {
+  border-radius: var(--w);
+}
+.key.encoder_l {
+  border-radius: var(--w);
 }
 .key[data-extra]:after {
   content: '';
