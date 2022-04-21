@@ -4,7 +4,7 @@ import Vue from 'vue';
 import layouts from './layouts';
 
 function getDefaultLayout() {
-  const userLang = navigator.language || navigator.userLanguage;
+  const userLang = 'zh_CN';
   let layout = 'ANSI';
   if (userLang.toLowerCase().indexOf('en') < 0) {
     layout = 'ISO';
@@ -12,12 +12,25 @@ function getDefaultLayout() {
   return layout;
 }
 
+function mapKeymap(arr) {
+  // Create look up table for QMK Code to Layout position
+  return arr.reduce((pre, cur) => {
+    pre[cur['code']] = {'key_code' : cur['key_code'],
+                            'qmk_code' : cur['qmk_code'],
+                            'active' : false}
+    return pre
+  }, {})
+}
+
 const state = {
-  layout: getDefaultLayout(),
-  keymap: {},
+  layout: 'ANSI',
+  keymap: {
+    ANSI: mapKeymap(layouts.ANSI.keys),
+    ISO: mapKeymap(layouts.ISO.keys)
+  },
   layouts: {
-    ISO: layouts.ISO,
-    ANSI: layouts.ANSI
+    ANSI: layouts.ANSI,
+    ISO: layouts.ISO
   }
 };
 
@@ -28,7 +41,7 @@ const getters = {
   getQMKCode(state) {
     return (code) => {
       if (isUndefined(code)) {
-        return '';
+        return 'KC_NONE';
       }
       return state.keymap[state.layout][code].qmk_code;
     };
@@ -36,32 +49,19 @@ const getters = {
   activeKeymap(state) {
     return state.keymap[state.layout];
   },
-  activeLayoutMeta(state) {
+  activeLayout(state) {
     return state.layouts[state.layout];
-  },
-  codeToPosition(state) {
-    return state.codeToPosition[state.layout];
   }
 };
 
-function mapKeymap(store, arr) {
-  // Create look up table for QMK Code to Layout position
-  return kk.reduce((pre, cur) => {
-    pre[cur['key_code']] = {'code' : cur['code'],
-                            'qmk_code' : cur['qmk_code'],
-                            'active' : false}
-    return pre
-  }, {})
-}
+
 
 const actions = {
-  init({ state, commit }) {
-    const store = this;
-    commit('setKeymap', {
-      ANSI: mapKeymap(store, layouts.ANSI.keys),
-      ISO: mapKeymap(store, layouts.ISO.keys)
-    });
-    return state.keymap;
+  activeOneKey({ commit }, code) {
+    commit('setActive', code);
+  },
+  detectOneKey({ commit }, code) {
+    commit('setDetected', code);
   }
 };
 
@@ -72,11 +72,11 @@ const mutations = {
   setKeymap(state, keymap) {
     state.keymap = keymap;
   },
-  setActive(state, { keyCode }) {
-    Vue.set(state.keymap[state.layout][keyCode], 'active', true);
+  setActive(state, code) {
+    Vue.set(state.keymap[state.layout][code], 'active', true);
   },
-  setDetected(state, { keyCode }) {
-    Vue.set(state.keymap[state.layout][keyCode], 'active', false);
+  setDetected(state, code) {
+    Vue.set(state.keymap[state.layout][code], 'active', false);
   },
   reset(state) {
     state.keymap[state.layout].forEach((v, idx) => {

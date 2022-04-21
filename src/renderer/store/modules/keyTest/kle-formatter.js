@@ -6,8 +6,8 @@ function getKeyCodeInfo(pat_str) {
   if (labels_str === "") {
     labels_str = "space"
   }
-  var code_ = keycodeMap.keyStr2code[labels_str][0]
-  var key_code_ = keycodeMap.keyStr2code[labels_str][1]
+  var key_code_ = keycodeMap.keyStr2code[labels_str][0]
+  var code_ = keycodeMap.keyStr2code[labels_str][1]
   var qmk_code_ = keycodeMap.keyStr2code[labels_str][2]
   return {labels:labels_, code:code_, qmk_code: qmk_code_, key_code: key_code_}
 }

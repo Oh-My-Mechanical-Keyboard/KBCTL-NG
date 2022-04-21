@@ -1,6 +1,6 @@
-// 'label' : [code, keyCode, qmkCode]
+// 'label' : [keyCode, code, qmkCode]
 var keyStr2code = {
-  'backspace' : [8, 'Backspce', 'KC_BSPC'],
+  'backspace' : [8, 'Backspace', 'KC_BSPC'],
   'tab' : [9, 'Tab', 'KC_TAB'],
   'clear' : [12, 'NumLock', 'KC_NLCK'],
   'enter' : [13, 'Enter', 'KC_ENT'],

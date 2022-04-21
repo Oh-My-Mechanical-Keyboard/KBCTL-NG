@@ -33,12 +33,17 @@ export default {
     'h2',
     'code',
     'labels',
-    'extra'
+    'extra',
+    'meta'
   ],
   computed: {
     keyClass() {
       let classes = []
-      classes.push('deactive')
+      if (this.meta.active) {
+        classes.push('active');
+      } else {
+        classes.push('deactive')
+      }
       return classes.join(' ');
     }
   },

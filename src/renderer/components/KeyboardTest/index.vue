@@ -3,11 +3,11 @@
     <h2 class="title">Keyboard Test</h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <div class="keyboard-keys" :style="{ width: `${layout.ex * unit}px`, height: `${layout.ey * unit}px` }">
+        <div class="keyboard-keys" :style="{ width: `${layouts[layout].ex * unit}px`, height: `${layouts[layout].ey * unit}px` }">
           <base-key
-            v-for="(key, i) in layout.keys"
+            v-for="key in testerLayer"
             ref = "key.code"
-            :key="`${i}`"
+            :key = "key.id"
             :unit = "unit"
             :x = "key.x"
             :y = "key.y"
@@ -20,6 +20,7 @@
             :extra = "key.extra"
             :code = "key.code"
             :labels = "key.labels"
+            :meta = "key.meta"
           >
           </base-key>
         </div>
@@ -29,10 +30,10 @@
 </template>
 
 <script>
-import kleAnsi108 from './kle-json/ansi108.json'
-import kleIso108 from './kle-json/iso108.json'
-import kleTools from './kle-formatter.js'
+
 import BaseKey from './BaseKey.vue'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import isUndefined from 'lodash/isUndefined'
 
 export default {
   name: 'keyboardTest',
@@ -40,18 +41,30 @@ export default {
   data () {
     return {
       unit: 50,
-      layouts: {
-        ansi108: kleTools.formatKleJson(kleAnsi108),
-        iso108: kleTools.formatKleJson(kleIso108)
-      },
-      activeLayout: 'ansi108',
       timingKeyUp: {},
       timingKeyDown: {}
     }
   },
   computed: {
-    layout () {
-      return this.layouts[this.activeLayout]
+    ...mapGetters('keyTest', [
+      'availableLayouts',
+      'getQMKCode',
+      'activeKeymap',
+      'activeLayout'
+    ]),
+    ...mapState('keyTest', [
+      'layouts',
+      'keymap',
+      'layout'
+    ]),
+    testerLayer() {
+      const keymap = this.activeKeymap
+      const curLayer = this.activeLayout.keys.map((cv, index) => {
+        cv['meta'] = keymap[cv['code']]
+        cv['id'] = index
+        return cv
+      })
+      return curLayer;
     }
   },
   async mounted() {
@@ -61,10 +74,17 @@ export default {
     this.destroyKeyListeners();
   },
   methods: {
+    ...mapActions('keyTest', [
+      'activeOneKey',
+      'detectOneKey'
+    ]),
+    ...mapMutations('keyTest', [
+      'setActive',
+      'setDetected',
+      'setLayoutMeta'
+    ]),
     switchLayout (val) {
-      if (val !== this.activeLayout) {
-        this.activeLayout = val
-      }
+
     },
     createKeyListeners() {
       document.addEventListener('keydown', this.keydown)
@@ -85,18 +105,16 @@ export default {
       console.log(evStr)
       event.preventDefault();
       event.stopPropagation();
-      // this.setDetected({
-      //     event.keyCode
-      // });
+      this.setDetected(event.code);
     },
     keydown(event) {
-      console.log(event)
+      console.log(this.testerLayer)
       // console.log(keycode.isEventKey(event, 'down'))
       // 记录按下的时间
       this.timingKeyDown[event.code] = performance.now();
       event.preventDefault();
       event.stopPropagation();
-      
+      this.setActive(event.code);
     },
     getElapsedTime(ev, endTs) {
       return (endTs - this.timingKeyDown[ev.code]).toFixed(3);
