@@ -26,6 +26,17 @@
         </div>
       </div>
       <br>
+      <label>{{ $t('ui.keycode') }}:</label>
+      <span class="hint">
+        <a
+          href="https://docs.qmk.fm/#/keycodes"
+          :title="$t('ui.keycodesRef')"
+          target="_blank"
+          rel="noopener"
+          >{{ $t('ui.keycodesRef') }}</a
+        >
+      </span>
+      <br>
       <button
         id="import"
         @click="importKeymap"

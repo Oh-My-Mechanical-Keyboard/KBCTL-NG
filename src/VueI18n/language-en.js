@@ -5,7 +5,9 @@ module.exports = {
         "keyboard" : "Keycode",
         "lighting" : "Lighting",
         "tool"     : "Tools",
-        "advance"  : "Advance"
+        "advance"  : "Advance",
+        "keycode"  : "Keycodes",
+        "keycodesRef": "Keycodes reference"
     },
     "keycode" : {
         "enter" : "Enter"
