@@ -45,10 +45,10 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/yr.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/yr.ico"
     },
     "linux": {
       "icon": "build/icons"

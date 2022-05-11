@@ -36,20 +36,6 @@
           >{{ $t('ui.keycodesRef') }}</a
         >
       </span>
-      <br>
-      <button
-        id="import"
-        @click="importKeymap"
-      >
-      upload
-      </button>
-      <input
-        id="fileImport"
-        type="file"
-        ref="fileImportElement"
-        accept="json"
-        @change="fileImportChanged"
-      ></input>
     </div>
   <div class="keycodes">
     <keycode-bar></keycode-bar>
@@ -72,109 +58,12 @@ export default {
     return {
       unit: 50,
       activeLayout: 'ansi108',
-      kbName: 'Z65'
+      kbName: 'YR65'
     }
   },
   computed: {
     layout () {
       return formatKleJson(kleZ65ble)
-    }
-  },
-  methods: {
-    switchLayout (val) {
-      if (val !== this.activeLayout) {
-        this.activeLayout = val
-      }
-    },
-    importKeymap () {
-      this.$refs.fileImportElement.click()
-    },
-    fileImportChanged () {
-      console.log('import file')
-      var files = this.$refs.fileImportElement.files
-      console.log(files)
-      this.reader = new FileReader()
-      this.reader.onload = this.importJSONOnLoad
-      if (files.length >= 1) {
-        this.reader.readAsText(files[0])
-      } else {
-        // set to the default layout which can not beed edited
-        this.$refs.fileImportElement.value = ''
-      }
-    },
-    async importJSONOnLoad () {
-      try {
-        const data = JSON.parse(this.reader.result)
-        await this.loadJsonData(data)
-      } catch (error) {
-        console.log(error)
-        alert('errors.invalidQMKKeymap')
-      }
-    },
-    async loadJsonData (data) {
-      if (data.version && data.keyboard && data.keyboard.settings) {
-        alert('errors.kbfirmwareJSONUnsupported')
-        return
-      }
-
-      if (checkInvalidKeymap(data)) {
-        alert('errors.unknownJSON')
-        return
-      }
-
-      /* TODO Add check for keyboard name and layout */
-
-      if (!isUndefined(data.author)) {
-        const { author, notes } = data
-        this.setAuthor(author)
-        this.setNotes(notes)
-      }
-
-      // remap old json files to new mappings if they need it
-      data = Object.assign(
-        data,
-        this.remapKeyboard(data.keyboard, data.layout)
-      )
-
-      this.setKeyboard(data.keyboard)
-      try {
-        await this.changeKeyboard(this.keyboard)
-        this.setLayout(data.layout)
-        // todo validate these values
-        await this.$router
-          .replace({
-            path: `/${data.keyboard}/${data.layout}`
-          })
-          .catch((err) => {
-            if (err.name !== 'NavigationDuplicated') {
-              // ignore nav errors
-              console.error(err)
-            }
-          })
-
-        var store = this.$store
-        let promise = await new Promise((resolve) =>
-          this.setLoadingKeymapPromise(resolve)
-        )
-        const stats = await this.load_converted_keymap(data.layers)
-        let msg = this.$t('statsTemplate', stats)
-        if (stats.warnings.length > 0 || stats.errors.length > 0) {
-          msg = `${msg}\n${stats.warnings.join('\n')}`
-          msg = `${msg}\n${stats.errors.join('\n')}`
-        }
-        this.deferredMessage(msg)
-        this.viewReadme(this.keyboard).then(() => {
-          let keymapName = data.keymap
-          if (keymapName.endsWith('.json')) {
-            keymapName = keymapName.replace(/.json$/, '')
-          }
-          this.setKeymapName(keymapName)
-          this.setDirty()
-        })
-        disableOtherButtons()
-      } catch (err) {
-        console.log('Unexpected error', err)
-      }
     }
   }
 }
