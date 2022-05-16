@@ -3,68 +3,137 @@
     <h2 class="title">Keyboard Test</h2>
     <div class="keyboard">
       <div class="keyboard-wrap">
-        <div class="keyboard-keys" :style="{ width: `${layout.w * unit}px`, height: `${layout.h * unit}px` }">
-          <div
-            v-for="(key, i) in layout.keys"
-            :key="`${i}`"
-            :class="['key', { active: Math.random() > 0.85 }]"
-            :style="{
-              left: `${key.x * unit + 2}px`,
-              top: `${key.y * unit + 2}px`,
-              width: `${key.w * unit - 4}px`,
-              height: `${key.h * unit - 4}px`,
-              '--x2': key.extra && `${key.x2 * unit}px`,
-              '--y2': key.extra && `${key.y2 * unit}px`,
-              '--w2': key.extra && `${key.w2 * unit - 4}px`,
-              '--h2': key.extra && `${key.h2 * unit - 4}px`,
-            }"
-            :data-extra="key.extra"
+        <div class="keyboard-keys" :style="{ width: `${layouts[layout].ex * unit}px`, height: `${layouts[layout].ey * unit}px` }">
+          <base-key
+            v-for="key in testerLayer"
+            ref = "key.code"
+            :key = "key.id"
+            :unit = "unit"
+            :x = "key.x"
+            :y = "key.y"
+            :w = "key.w"
+            :h = "key.h"
+            :x2 = "key.x2"
+            :y2 = "key.y2"
+            :w2 = "key.w2"
+            :h2 = "key.h2"
+            :extra = "key.extra"
+            :code = "key.code"
+            :labels = "key.labels"
+            :meta = "key.meta"
           >
-            <span v-for="label in key.code" class="label">{{ label }}</span>
-          </div>
+          </base-key>
         </div>
-      </div>
-      <div class="reset">
-        <button @click="switchLayout('ansi108')">RESET</button>
-      </div>
-      <div class="layouts">
-        <button @click="switchLayout('ansi108')">ANSI 108</button>
-        <button @click="switchLayout('ansi108BigAss')">ANSI 108 Big Ass</button>
-        <button @click="switchLayout('iso108')">ISO 108</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import kleAnsi108 from './kle-json/ansi108.json'
-import kleAnsi108BigAss from './kle-json/ansi108-big-ass.json'
-import kleIso108 from './kle-json/iso108.json'
-import { formatKleJson } from './kle-formatter'
+
+import BaseKey from './BaseKey.vue'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+import isUndefined from 'lodash/isUndefined'
+
 export default {
-  name: 'keyboard test',
+  name: 'keyboardTest',
+  components: { BaseKey },
   data () {
     return {
-      electron: process.versions.electron,
       unit: 50,
-      layouts: {
-        ansi108: formatKleJson(kleAnsi108),
-        ansi108BigAss: formatKleJson(kleAnsi108BigAss),
-        iso108: formatKleJson(kleIso108)
-      },
-      activeLayout: 'ansi108'
+      timingKeyUp: {},
+      timingKeyDown: {}
     }
   },
   computed: {
-    layout () {
-      return this.layouts[this.activeLayout]
+    ...mapGetters('keyTest', [
+      'availableLayouts',
+      'getQMKCode',
+      'activeKeymap',
+      'activeLayout'
+    ]),
+    ...mapState('keyTest', [
+      'layouts',
+      'keymap',
+      'layout'
+    ]),
+    testerLayer() {
+      const keymap = this.activeKeymap
+      const curLayer = this.activeLayout.keys.map((cv, index) => {
+        cv['meta'] = keymap[cv['code']]
+        cv['id'] = index
+        return cv
+      })
+      return curLayer;
     }
   },
+  async mounted() {
+    this.createKeyListeners()
+  },
+  beforeDestroy() {
+    this.destroyKeyListeners();
+  },
   methods: {
+    ...mapActions('keyTest', [
+      'activeOneKey',
+      'detectOneKey'
+    ]),
+    ...mapMutations('keyTest', [
+      'setActive',
+      'setDetected',
+      'setLayoutMeta'
+    ]),
     switchLayout (val) {
-      if (val !== this.activeLayout) {
-        this.activeLayout = val
+
+    },
+    createKeyListeners() {
+      document.addEventListener('keydown', this.keydown)
+      document.addEventListener('keyup', this.keyup)
+    },
+    destroyKeyListeners() {
+      document.removeEventListener('keydown', this.keydown);
+      document.removeEventListener('keyup', this.keyup);
+    },
+    keyup(event) {
+      // 记录抬起的时间
+      const endTS = performance.now();
+      this.timingKeyUp[event.code] = endTS;
+      const elapsedTime = this.getElapsedTime(event, endTS);
+      const evStr = this.formatKeyEvent(event, elapsedTime);
+      console.log(evStr)
+      event.preventDefault();
+      event.stopPropagation();
+      this.setDetected(event.code);
+    },
+    keydown(event) {
+      // 记录按下的时间
+      this.timingKeyDown[event.code] = performance.now();
+      event.preventDefault();
+      event.stopPropagation();
+      this.setActive(event.code);
+    },
+    getElapsedTime(ev, endTs) {
+      return (endTs - this.timingKeyDown[ev.code]).toFixed(3);
+    },
+    formatKeyEvent(ev, time) {
+      const msg = [];
+      if (time) {
+        msg.push(`in ${time}ms`);
       }
+      msg.unshift(
+        [
+          'Event key:',
+          this.greenMarkup(ev.key, 11),
+          'Code:',
+          this.greenMarkup(ev.code, 13),
+          'KeyCode:',
+          ev.keyCode
+        ].join(' ')
+      );
+      return msg.join(' ');
+    },
+    greenMarkup(text, padlen) {
+      return `<span class="log-green">${text.padEnd(padlen, ' ')}</span>`;
     }
   }
 }
@@ -95,41 +164,7 @@ export default {
   overflow: hidden;
   position: relative;
 }
-.key {
-  position: absolute;
-  z-index: 10;
-  border-radius: 7px;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  /* overflow: hidden; */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-.key[data-extra]:after {
-  content: '';
-  position: absolute;
-  top: var(--y2);
-  left: var(--x2);
-  width: var(--w2);
-  height: var(--h2);
-  z-index: -5;
-  display: block;
-  border-radius: 7px;
-  background-color: #333;
-  box-sizing: border-box;
-}
-.key.active, .key.active[data-extra]:after {
-  background-color: #aaa;
-  color: #333;
-}
-.label {
-  /* height: 16px; */
-  line-height: 16px;
-  display: block;
-  min-width: 1px;
-  min-height: 16px;
+span.log-green {
+  color: lightgreen;
 }
 </style>

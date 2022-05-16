@@ -1,16 +1,20 @@
 <template>
   <div class="home-page">
-    <keyboard-test></keyboard-test>
+    <h1>This is home page.</h1>
+    <keyboard-layout></keyboard-layout>
   </div>
 </template>
 
 <script>
-import KeyboardTest from '@/components/KeyboardTest/index.vue'
+import KeyboardLayout from '@/components/KeyboardLayout/index.vue'
 export default {
   name: 'home',
-  components: { KeyboardTest }
+  components: { KeyboardLayout }
 }
 </script>
 
 <style scoped>
+h1 {
+  color: blue;
+}
 </style>

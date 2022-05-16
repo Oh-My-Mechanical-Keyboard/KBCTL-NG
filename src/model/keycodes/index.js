@@ -16,19 +16,24 @@ const keycodesList = [
   ...bluetoothKeycodes
 ]
 
-const allKeycodes = {
+const allKeycodes = [
   basicKeycodes,
   hyperKeycodes,
   mediaKeycodes,
   layerKeycodes,
   lightingKeycodes,
   macroKeycodes,
-  bluetoothKeycodes,
-  keycodesList
-}
+  bluetoothKeycodes
+]
 
-export function getAllKeycodes () {
-  return allKeycodes
-}
+const keycodeTypeName = [
+  'Basic',
+  'Hyper',
+  'Media',
+  'Layer',
+  'Lighting',
+  'Macro',
+  'Connection'
+]
 
-export default allKeycodes
+export default {keycodeTypeName, allKeycodes, keycodesList}

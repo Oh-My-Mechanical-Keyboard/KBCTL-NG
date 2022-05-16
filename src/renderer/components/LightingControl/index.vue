@@ -1,12 +1,12 @@
 <template>
-  <div class="macro-record">
-    <p> macro time line </p>
+  <div class="lighting-control">
+    <p> lighting</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'macro'
+  name: 'lightingControl'
 }
 </script>
 

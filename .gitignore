@@ -108,3 +108,4 @@ thumbs.db
 build/*
 !build/icons
 !.gitkeep
+.idea/*

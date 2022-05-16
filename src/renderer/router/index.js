@@ -3,58 +3,48 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export const page_routes = [
+export const routes = [
   {
     path: '/home',
     name: 'home',
-    label: 'Home',
+    label: 'ui.home',
     component: require('@/pages/HomePage').default
   },
   {
     path: '/keyboard',
-    name: 'Keyboard',
-    label: 'Keyboard',
+    name: 'keyboard',
+    label: 'ui.keyboard',
     component: require('@/pages/KeyboardPage').default
   },
   {
     path: '/macro',
-    name: 'Macro',
-    label: 'Macro',
+    name: 'macro',
+    label: 'ui.macro',
     component: require('@/pages/MacroPage').default
   },
   {
     path: '/lighting',
-    name: 'Lighting',
-    label: 'Lighting',
+    name: 'lighting',
+    label: 'ui.lighting',
     component: require('@/pages/LightingPage').default
   },
   {
     path: '/tool',
-    name: 'Tool',
-    label: 'Tool',
+    name: 'tool',
+    label: 'ui.tool',
     component: require('@/pages/ToolPage').default
   },
   {
     path: '/advance',
-    name: 'Advance',
-    label: 'Advance',
+    name: 'advance',
+    label: 'ui.advance',
     component: require('@/pages/AdvancePage').default
-  }
-]
-
-export const tool_routes = [
-  {
-    path: '/keyboardtset',
-    name: 'KeyboardTesk',
-    label: 'KeyboardTest',
-    component: require('@/components/KeyboardTest/index.vue').default
   }
 ]
 
 export default new Router({
   routes: [
-    ...page_routes,
-    ...tool_routes,
-    // { path: '*', redirect: '/home' }
+    ...routes,
+    { path: '*', redirect: '/home' }
   ]
 })
