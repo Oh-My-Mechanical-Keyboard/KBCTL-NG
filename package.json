@@ -56,11 +56,13 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "electron-store": "^8.0.1",
     "electron-updater": "^4.6.5",
     "element-ui": "^2.15.6",
     "howler": "^2.2.3",
     "keycode": "^2.2.1",
     "lodash": "^4.17.21",
+    "node-fetch": "^3.2.4",
     "node-hid": "^2.1.1",
     "sass": "^1.49.9",
     "vue": "^2.5.16",

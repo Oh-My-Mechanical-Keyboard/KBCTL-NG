@@ -10,6 +10,42 @@ const canConnect = (device) => {
         return false;
     }
 }
+const DEVICE_META_MAP = KEYBOARDS.reduce(
+    (accum, deviceMeta) => ({
+        ...accum,
+        [deviceMeta.vendorProductId]: deviceMeta
+    }),
+    {}
+);
+const COMPILED_DEVICE_META_MAP = Object.entries(
+    DEVICE_META_MAP
+).reduce(
+    (p, [k, v]) => ({
+        ...p,
+        [k]: {
+            ...v,
+            compiledLayout: parseKLERaw(v.layout),
+            compiledMatrixLayout: parseLayout(v.matrixLayout)
+        }
+    }),
+    {}
+);
+function getKeyboardId({ productId, vendorId }) {
+    return vendorId * 65536 + productId;
+}
+function getKeyboardFromDevice(device) {
+    return COMPILED_DEVICE_META_MAP[getKeyboardId(device)];
+}
+
+function getKeyboardFromVendorProductId(id) {
+    return COMPILED_DEVICE_META_MAP[id];
+}
+function getMatrixLayoutFromDevice(device) {
+    const kb = getKeyboardFromDevice(device);
+    return kb.compiledMatrixLayout;
+}
+
+
 
 function eqArr(arr1, arr2) {
     if (arr1.length !== arr2.length) {
@@ -19,6 +55,14 @@ function eqArr(arr1, arr2) {
 }
 const shiftTo16Bit = ([hi, lo]) => (hi << 8) | lo
 const shiftFrom16Bit = (value) => [value >> 8, value & 255]
+const shiftBufferTo16Bit = (buffer) => {
+    let shiftedBuffer = [];
+    for (let i = 0; i < buffer.length; i += 2) {
+        shiftedBuffer.push(shiftTo16Bit([buffer[i], buffer[i + 1]]));
+    }
+    return shiftedBuffer;
+};
+const shiftBufferFrom16Bit = (buffer) => buffer.map(shiftFrom16Bit).flatMap(value => value);
 
 
 const COMMAND_START = 0x00; // This is really a HID Report ID
@@ -83,6 +127,10 @@ class KeyboardAPI {
     getDevice() {
         return device_cache[this.kbAddr].device;
     }
+    getMatrix() {
+        const device = this.getDevice();
+        return getMatrixLayoutFromDevice(device);
+    }
 
     async flushQueue() {
         if (this.isFlushing === true) {
@@ -111,7 +159,6 @@ class KeyboardAPI {
             }
         });
     }
-
     refresh(kbAddr) {
         this.kbAddr = kbAddr;
         device_cache[kbAddr] = { ...device_cache[kbAddr], hid: new HID.HID(kbAddr) };
@@ -293,6 +340,85 @@ class KeyboardAPI {
         await this.hidCommand(DYNAMIC_KEYMAP_MACRO_RESET)
     }
 
+    async timeout(time) {
+        return new Promise((res, rej) => {
+            commandQueue.push({
+                res,
+                args: () => new Promise((r, j) => setTimeout(() => r() || res(), time))
+            });
+            if (!this.isFlushing) {
+                this.flushQueue();
+            }
+        });
+    }
+
+    async getKeymapBuffer(offset, size) {
+        //size must be <=14
+        if (size > 28) {
+            throw 'Max data length is 28.';
+        }
+        const res = await this.hidCommand(DYNAMIC_KEYMAP_GET_BUFFER, [
+            ...shiftFrom16Bit(offset),
+            size
+        ]);
+        return [...res].slice(4, size + 4);
+    }
+    keymapBufferToKeycodes(buffer) {
+        const keycodes = Array.from(buffer).reduce(
+            (pre, now, idx) =>
+                idx % 2 === 0
+                    ? [...pre, (now || 0) << 8]
+                    : [...pre.slice(0, -1), pre[pre.length - 1] + (now || 0)],
+            []
+        );
+        return keycodes;
+    }
+
+    async readRawMatrix(matrix, layer) {
+        const version = await this.getProtocolVersion();
+        if (version >= PROTOCOL_BETA) {
+            return this.fastReadRawMatrix(matrix, layer);
+        }
+        //  else if (version === PROTOCOL_ALPHA) {
+        // return this.slowReadRawMatrix(matrix, layer);
+        // }
+    }
+
+    async fastReadRawMatrix({ rows, cols }, layer) {
+        const length = rows * cols;
+        const MAX_KEYCODES_PARTIAL = 14;
+        const bufferList = new Array < number > (
+            Math.ceil(length / MAX_KEYCODES_PARTIAL)
+        ).fill(0);
+        const { res: promiseRes } = bufferList.reduce(
+            ({ res, remaining }) =>
+                remaining < MAX_KEYCODES_PARTIAL
+                    ? {
+                        res: [
+                            ...res,
+                            this.getKeymapBuffer(
+                                layer * length * 2 + 2 * (length - remaining),
+                                remaining * 2
+                            )
+                        ],
+                        remaining: 0
+                    }
+                    : {
+                        res: [
+                            ...res,
+                            this.getKeymapBuffer(
+                                layer * length * 2 + 2 * (length - remaining),
+                                MAX_KEYCODES_PARTIAL * 2
+                            )
+                        ],
+                        remaining: remaining - MAX_KEYCODES_PARTIAL
+                    },
+            { res: [], remaining: length }
+        );
+        const yieldedRes = await Promise.all(promiseRes);
+        return yieldedRes.flatMap(shiftBufferTo16Bit);
+    }
+
     async saveLighting() {
         await this.hidCommand(LIGHT_CONFIG_SAVE);
     }
@@ -368,8 +494,11 @@ async function consoleFun() {
     // const val = await api.setColor(100,250)
     // const val = await api.getMacroCount()
     // const val = await api.getMacroBufferSize()
-    const val = await api.getMacroBytes()
+    // const val = await api.getMacroBytes()
+    const val = await api.getKeymapBuffer(0, 14 * 2)
+    const val2 = api.keymapBufferToKeycodes(val)
     console.log(val)
+    console.log(val2)
 }
 consoleFun()
 // console.log(device_cache)
