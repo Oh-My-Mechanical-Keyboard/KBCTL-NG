@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "electron-store": "^8.0.1",
+    "electron-store": "5",
     "electron-updater": "^4.6.5",
     "element-ui": "^2.15.6",
     "howler": "^2.2.3",

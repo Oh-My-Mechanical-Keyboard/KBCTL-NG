@@ -56,7 +56,7 @@ function validateLayouts(layouts) {
 function validateKeyBounds(matrix, layouts) {
   var rows = matrix.rows, cols = matrix.cols;
   var optionKeys = __flat(Object.values(layouts.optionKeys)).map(function (group) {
-      return Object.values(group).flat();
+      return __flat(Object.values(group));
   });
   var oobKeys = layouts.keys
       .concat(optionKeys)

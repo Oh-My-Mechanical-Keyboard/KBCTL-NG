@@ -1,16 +1,10 @@
 const HID = require('node-hid');
 
-// export
-const canConnect = (device) => {
-    try {
-      new KeyboardAPI(device);
-      return true;
-    } catch (e) {
-      console.error('Skipped ', device, e);
-      return false;
-    }
+var __flat = (arr, deep=1) => {
+    if (deep > 0)
+      return arr.reduce((pre, cur) => pre.concat(Array.isArray(cur) ? __flat(cur, deep - 1) : cur), [])
+    return arr.slice()
 }
-
 function eqArr(arr1, arr2) {
     if (arr1.length !== arr2.length) {
         return false;
@@ -26,7 +20,7 @@ const shiftBufferTo16Bit = (buffer) => {
     }
     return shiftedBuffer;
 };
-const shiftBufferFrom16Bit = (buffer) => buffer.map(shiftFrom16Bit).flatMap(value => value);
+const shiftBufferFrom16Bit = (buffer) => __flat(buffer.map(shiftFrom16Bit)).map(value => value);
 
 
 const COMMAND_START = 0x00; // This is really a HID Report ID
@@ -70,7 +64,7 @@ const LIGHT_CUSTOM_COLOR = 0x17
 const PROTOCOL_BETA = 8
 const PROTOCOL_ALPHA = 7
 
-device_cache = {}
+var device_cache = {}
 
 // export
 class KeyboardAPI {
@@ -79,12 +73,14 @@ class KeyboardAPI {
     isFlushing = false
     commandQueue = []
     constructor(device) {
-        const path = device.path
-        this.kbAddr = device.path;
-        if (!device_cache[path]) {
-            device_cache[path] = { device, hid: new HID.HID(path) };
-        } else {
-            device_cache[path] = { ...device_cache[path], device };
+        if (device !== undefined) {
+            const path = device.path
+            this.kbAddr = device.path;
+            if (!device_cache[path]) {
+                device_cache[path] = { device, hid: new HID.HID(path) };
+            } else {
+                device_cache[path] = { ...device_cache[path], device };
+            }
         }
         // console.log(device_cache)
     }
@@ -352,7 +348,7 @@ class KeyboardAPI {
     async fastReadRawMatrix({ rows, cols }, layer) {
         const length = rows * cols;
         const MAX_KEYCODES_PARTIAL = 14;
-        const bufferList = new Array < number > (
+        const bufferList = new Array(
             Math.ceil(length / MAX_KEYCODES_PARTIAL)
         ).fill(0);
         const { res: promiseRes } = bufferList.reduce(
@@ -381,7 +377,9 @@ class KeyboardAPI {
             { res: [], remaining: length }
         );
         const yieldedRes = await Promise.all(promiseRes);
-        return yieldedRes.flatMap(shiftBufferTo16Bit);
+        return this.keymapBufferToKeycodes(__flat(yieldedRes));
+        // return shiftBufferTo16Bit(__flat(yieldedRes));
+        
     }
 
     async saveLighting() {
@@ -396,6 +394,6 @@ class KeyboardAPI {
     }
 }
 
-export { canConnect, KeyboardAPI }
+export { KeyboardAPI }
 
 // module.exports = {canConnect, KeyboardAPI}
